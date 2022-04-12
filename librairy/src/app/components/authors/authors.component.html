@@ -1,0 +1,89 @@
+<div>
+  <nav class="navbar navbar-light">
+    <div>
+      <a class="navbar-brand" routerLink="/books">Livres</a>
+      <span class="navbar-brand current">Auteurs</span>
+    </div>
+  </nav>
+
+  <div class="title">
+    <h1>Nos auteurs</h1>
+    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addAuthorModal" (click)="initAuthorCreate()">
+      Ajouter un auteur
+    </button>
+  </div>
+
+  <hr />
+
+  <div class="authorsContainer">
+    <div class="author" *ngFor="let author of authors">
+      <h2>{{author.firstname}} {{author.lastname}} <i class="bi bi-emoji-dizzy" *ngIf="!author.isAlive"></i></h2>
+      <div class="title">
+        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteAuthorModal" (click)="initAuthorToDelete(author.id, author.firstname + ' ' + author.lastname)">
+          <i class="bi bi-trash"></i>
+        </button>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAuthorModal" (click)="initAuthorToUpdate(author)">
+          <i class="bi bi-pencil-fill"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="addAuthorModal" tabindex="-1" aria-labelledby="AddAuthorModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="AddAuthorModalLabel">Ajouter un auteur</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+          <div class="mb-3">
+            <label class="form-label">* Prémon</label>
+            <input type="text" class="form-control" [(ngModel)]="newAuthor.firstname">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">* Nom</label>
+            <input type="text" class="form-control" [(ngModel)]="newAuthor.lastname">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">* Date de naissance</label>
+            <input type="date" class="form-control" [(ngModel)]="newAuthor.birthdate">
+          </div>
+          <div class="mb-3">
+            <div class="mb-3 form-check form-switch">
+              <label class="form-label">Vivant</label>
+              <input class="form-check-input" type="checkbox" role="switch" [(ngModel)]="newAuthor.isAlive">
+            </div>
+          </div>
+        <div class="modal-footer" *ngIf="!isUpdating">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-success" data-bs-dismiss="modal" (click)="addAuthor(newAuthor)">Enregistrer</button>
+        </div>
+        <div class="modal-footer" *ngIf="isUpdating">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-success" data-bs-dismiss="modal" (click)="updateAuthor(newAuthor)">Enregistrer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="deleteAuthorModal" tabindex="-1" aria-labelledby="DeleteAuthorModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="DeleteAuthorModalLabel">Êtes vous sur de vouloir supprimer cet auteur ?</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <span>Auteur à supprimer : {{authorToDelete.fullname}}</span>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="deleteAuthor()">Oui</button>
+      </div>
+    </div>
+  </div>
+</div>

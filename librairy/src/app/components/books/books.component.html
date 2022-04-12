@@ -1,0 +1,104 @@
+<div>
+  <nav class="navbar navbar-light">
+    <div>
+      <span class="navbar-brand current">Livres</span>
+      <a class="navbar-brand" routerLink="/authors">Auteurs</a>
+    </div>
+  </nav>
+
+  <div class="title">
+    <h1>Nos livres</h1>
+    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addBookModal" (click)="initBookCreate()">
+      Ajouter un livre
+    </button>
+  </div>
+
+  <hr />
+
+  <div class="booksContainer">
+    <div class="book" *ngFor="let book of books">
+      <img :src="{{book.imageUrl}}"/>
+      <h2>{{book.title}} <i>({{book.releaseDate}})</i></h2>
+      <div>Ecrit par {{book.author}}</div>
+      <div>Genre {{book.topic}}</div>
+      <div class="title">
+        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteBookModal" (click)="initBookToDelete(book.id, book.title)">
+          <i class="bi bi-trash"></i>
+        </button>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addBookModal" (click)="initBookToUpdate(book)">
+          <i class="bi bi-pencil-fill"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="addBookModal" tabindex="-1" aria-labelledby="AddBookModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="AddBookModalLabel">Ajouter un livre</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+        <div class="mb-3">
+          <label class="form-label">* Titre</label>
+          <input type="text" class="form-control" [(ngModel)]="newBook.title">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">* Auteur</label>
+          <input class="form-control" list="authorList" placeholder="Type to search..." [(ngModel)]="newBook.author">
+          <datalist id="authorList">
+            <option :value="{{author}}" *ngFor="let author of authors">
+          </datalist>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Année de sortie</label>
+          <input type="number" class="form-control" value="2022" [(ngModel)]="newBook.releaseDate">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Genre</label>
+          <select class="form-select" [(ngModel)]="newBook.topic">
+            <option :value="{{topic}}" *ngFor="let topic of topics">{{topic}}</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Image url</label>
+          <input type="text" class="form-control" [(ngModel)]="newBook.imageUrl">
+        </div>
+        <div class="mb-3 form-check form-switch">
+          <label class="form-check-label">Livre audio</label>
+          <input class="form-check-input" type="checkbox" role="switch" [(ngModel)]="newBook.isAudio">
+        </div>
+
+      </div>
+      <div class="modal-footer" *ngIf="!isUpdating">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-success" data-bs-dismiss="modal" (click)="addBook(newBook)">Enregistrer</button>
+      </div>
+      <div class="modal-footer" *ngIf="isUpdating">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-success" data-bs-dismiss="modal" (click)="updateBook(newBook)">Enregistrer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="deleteBookModal" tabindex="-1" aria-labelledby="DeleteBookModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="DeleteBookModalLabel">Êtes vous sur de vouloir supprimer ce livre ?</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <span>Livre à supprimer : {{bookToDelete.title}}</span>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="deleteBook()">Oui</button>
+      </div>
+    </div>
+  </div>
+</div>
