@@ -1,0 +1,1 @@
+INSERT INTO Author(firstname, lastname, birthdate, isAlive) values("Jean", "Dupont", "May 04 09:51:52 CDT 2009", FALSE)
