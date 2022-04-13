@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Author } from 'src/app/models/author/author';
 import { Book } from 'src/app/models/book/book';
 import { StoreroomService } from 'src/app/services/storeroom/storeroom.service';
 
@@ -11,7 +12,7 @@ export class BooksComponent implements OnInit {
   isUpdating: boolean = false;
   books: Book[] = [];
   authors: string[] = [];
-  topics: string[] = ["historique", "policier", "amour", "espionnage", "Science-fiction", "Fantasy", "Biographie", "Conte", "Nouvelles"];
+  topics: string[] = ["Historique", "Policier", "Amour", "Espionnage", "Science-fiction", "Fantasy", "Biographie", "Conte", "Nouvelles", "Pédagogie", "Autre"];
   newBook: {
     id: string,
     title:string,
@@ -39,8 +40,16 @@ export class BooksComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.authors = this.storeroom.getAuthorsName()
-    this.books = this.storeroom.getBooks();
+    this.storeroom.getAuthors().subscribe(data => {
+      this.authors = data.map((author: Author) => author.firstname+' '+author.lastname);
+    })
+    this.getBooks();
+  }
+
+  getBooks() {
+    this.storeroom.getBooks().subscribe(data => {
+      this.books = data;
+    })
   }
 
   initBookCreate() {
@@ -63,7 +72,9 @@ export class BooksComponent implements OnInit {
     topic:string,
     imageUrl:string,
     isAudio:boolean }): void {
-      this.books = this.storeroom.addBook(newBook.title, newBook.author, newBook.releaseDate, newBook.topic, newBook.imageUrl, newBook.isAudio);
+      this.storeroom.addBook(newBook.title, newBook.author, newBook.releaseDate, newBook.topic, newBook.imageUrl, newBook.isAudio).subscribe(data => {
+        this.getBooks();
+      })
   }
 
   initBookToUpdate(book:Book) {
@@ -87,8 +98,10 @@ export class BooksComponent implements OnInit {
     topic:string,
     imageUrl:string,
     isAudio:boolean }) {
-      this.books = this.storeroom.updateBook(newBook.id, newBook.title, newBook.author, newBook.releaseDate, newBook.topic, newBook.imageUrl, newBook.isAudio);
-  }
+      this.storeroom.updateBook(newBook.id, newBook.title, newBook.author, newBook.releaseDate, newBook.topic, newBook.imageUrl, newBook.isAudio).subscribe(data => {
+        this.getBooks();
+      })
+    }
 
   initBookToDelete(id:string, title:string) {
     this.bookToDelete.id = id;
@@ -96,6 +109,8 @@ export class BooksComponent implements OnInit {
   }
 
   deleteBook() {
-    this.books = this.storeroom.deleteBook(this.bookToDelete.id);
+    this.storeroom.deleteBook(this.bookToDelete.id).subscribe(data => {
+      this.getBooks();
+    })
   }
 }

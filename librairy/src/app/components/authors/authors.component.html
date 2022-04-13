@@ -17,7 +17,8 @@
 
   <div class="authorsContainer">
     <div class="author" *ngFor="let author of authors">
-      <h2>{{author.firstname}} {{author.lastname}} <i class="bi bi-emoji-dizzy" *ngIf="!author.isAlive"></i></h2>
+      <h2>{{author.lastname}}</h2>
+      <h3>{{author.firstname}} <i class="bi bi-emoji-dizzy" *ngIf="!author.isAlive"></i></h3>
       <div class="title">
         <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteAuthorModal" (click)="initAuthorToDelete(author.id, author.firstname + ' ' + author.lastname)">
           <i class="bi bi-trash"></i>
@@ -46,10 +47,6 @@
           <div class="mb-3">
             <label class="form-label">* Nom</label>
             <input type="text" class="form-control" [(ngModel)]="newAuthor.lastname">
-          </div>
-          <div class="mb-3">
-            <label class="form-label">* Date de naissance</label>
-            <input type="date" class="form-control" [(ngModel)]="newAuthor.birthdate">
           </div>
           <div class="mb-3">
             <div class="mb-3 form-check form-switch">

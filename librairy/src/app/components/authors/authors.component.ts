@@ -14,13 +14,11 @@ export class AuthorsComponent implements OnInit {
     id:string,
     firstname:string,
     lastname:string,
-    birthdate:string,
     isAlive:boolean
   } = {
     id: "",
     firstname: "",
     lastname: "",
-    birthdate: '2000-01-01',
     isAlive: true
   }
   authorToDelete: {id:string, fullname: string} = {
@@ -34,7 +32,13 @@ export class AuthorsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.authors = this.storeroom.getAuthors();
+    this.getAuthors();
+  }
+
+  getAuthors() {
+    this.storeroom.getAuthors().subscribe(data => {
+      this.authors = data;
+    })
   }
 
   initAuthorCreate() {
@@ -43,7 +47,6 @@ export class AuthorsComponent implements OnInit {
       id: "",
       firstname: "",
       lastname: "",
-      birthdate: '2000-01-01',
       isAlive: true
     }
   }
@@ -51,9 +54,10 @@ export class AuthorsComponent implements OnInit {
   addAuthor(newAuthor: {
     firstname:string,
     lastname:string,
-    birthdate:string,
     isAlive:boolean}): void {
-      this.authors = this.storeroom.addAuthor(newAuthor.firstname, newAuthor.lastname, newAuthor.birthdate, newAuthor.isAlive);
+    this.storeroom.addAuthor(newAuthor.firstname, newAuthor.lastname, newAuthor.isAlive).subscribe(data => {
+      this.getAuthors();
+    })
   }
 
   initAuthorToUpdate(author:Author) {
@@ -62,7 +66,6 @@ export class AuthorsComponent implements OnInit {
       id: author.id,
       firstname: author.firstname,
       lastname: author.lastname,
-      birthdate: author.birthdate,
       isAlive: author.isAlive
     };
   }
@@ -71,10 +74,11 @@ export class AuthorsComponent implements OnInit {
     id: string,
     firstname:string,
     lastname:string,
-    birthdate:string,
     isAlive:boolean
   }) {
-    this.authors = this.storeroom.updateAuthor(newAuthor.id, newAuthor.firstname, newAuthor.lastname, newAuthor.birthdate, newAuthor.isAlive);
+    this.storeroom.updateAuthor(newAuthor.id, newAuthor.firstname, newAuthor.lastname, newAuthor.isAlive).subscribe(data => {
+      this.getAuthors();
+    })
   }
 
   initAuthorToDelete(id:string, fullname:string) {
@@ -83,6 +87,8 @@ export class AuthorsComponent implements OnInit {
   }
 
   deleteAuthor() {
-    this.authors = this.storeroom.deleteAuthor(this.authorToDelete.id);
+    this.storeroom.deleteAuthor(this.authorToDelete.id).subscribe(data => {
+      this.getAuthors();
+    })
   }
 }

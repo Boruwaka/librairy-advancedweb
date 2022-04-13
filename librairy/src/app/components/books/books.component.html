@@ -18,7 +18,7 @@
   <div class="booksContainer">
     <div class="book" *ngFor="let book of books">
       <img :src="{{book.imageUrl}}"/>
-      <h2>{{book.title}} <i>({{book.releaseDate}})</i></h2>
+      <h2>{{book.title}} <i *ngIf="book.isAudio" title="Livre audio" class="bi bi-music-note"></i> <i>({{book.releaseDate}})</i></h2>
       <div>Ecrit par {{book.author}}</div>
       <div>Genre {{book.topic}}</div>
       <div class="title">

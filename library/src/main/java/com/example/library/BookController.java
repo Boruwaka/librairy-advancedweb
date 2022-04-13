@@ -20,22 +20,26 @@ public class BookController {
     @Autowired
     BookService bookService;
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping("/books")
     public List<Book> booksList() {
         return repository.findAll();
     }
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping("/books")
     Book newBook(@RequestBody Book newBook) {
         return repository.save(newBook);
     }
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping("/books/{id}")
     Optional<Book> one(@PathVariable Long id) {
 
         return repository.findById(id);
     }
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @PutMapping("/books/{id}")
     Book replaceBook(@RequestBody Book newBook, @PathVariable Long id) {
 
@@ -55,6 +59,7 @@ public class BookController {
                 });
     }
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @DeleteMapping("/books/{id}")
     void deleteBook(@PathVariable Long id) {
         repository.deleteById(id);

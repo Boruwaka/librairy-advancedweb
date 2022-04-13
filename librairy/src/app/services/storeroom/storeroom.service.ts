@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Author } from 'src/app/models/author/author';
 import { Book } from 'src/app/models/book/book';
+import { HttpClient, HttpHeaders, HttpClientModule } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -8,8 +9,9 @@ import { Book } from 'src/app/models/book/book';
 export class StoreroomService {
   books: Book[] = [];
   authors: Author[] = [];
+  apiURL: String = "http://localhost:8092";
 
-  constructor() { }
+  constructor(private http: HttpClient) {}
 
   addBook(
     title:string,
@@ -18,25 +20,22 @@ export class StoreroomService {
     topic:string,
     imageUrl:string,
     isAudio:boolean) {
-    this.books.push(new Book(
-      title, author, releaseDate, topic, imageUrl, isAudio)
-    );
-
-    return this.books;
+      return this.http.post<any>(this.apiURL+'/books/', {
+        'title': title,
+        'author': author,
+        'releaseDate': releaseDate,
+        'topic': topic, 
+        'imageUrl': imageUrl,
+        'isAudio': isAudio
+      });
   }
 
   getBooks() {
-    return this.books;
+    return this.http.get<any>(this.apiURL+'/books/');
   }
 
   deleteBook(id:string) {
-    for( var i = 0; i < this.books.length; i++){                  
-      if ( this.books[i].id === id) { 
-        this.books.splice(i, 1); 
-        i--; 
-      }
-    }
-    return this.books;
+    return this.http.delete<any>(this.apiURL+'/books/'+id);
   }
 
   updateBook(
@@ -47,54 +46,44 @@ export class StoreroomService {
     topic:string="",
     imageUrl:string="",
     isAudio:boolean= false) {
-    for( var i = 0; i < this.books.length; i++){                  
-      if ( this.books[i].id === id) { 
-        this.books[i].update(title, author, releaseDate, topic, imageUrl, isAudio);
-      }
-    }
-    return this.books;
+      return this.http.put<any>(this.apiURL+'/books/'+id, {
+        'title': title,
+        'author': author,
+        'releaseDate': releaseDate,
+        'topic': topic, 
+        'imageUrl': imageUrl,
+        'isAudio': isAudio
+      });
   }
 
   addAuthor(
     firstname:string,
     lastname:string,
-    birthdate:string,
     isAlive:boolean) {
-      this.authors.push(new Author(firstname, lastname, birthdate, isAlive)
-    );
-
-    return this.authors;
+      return this.http.post<any>(this.apiURL+'/authors/', {
+        'firstname': firstname,
+        'lastname': lastname, 
+        'isAlive': isAlive
+      });
   }
 
   updateAuthor(
     id:string,
     firstname:string,
     lastname:string,
-    birthdate:string,
     isAlive:boolean) {
-    for( var i = 0; i < this.authors.length; i++){                  
-      if ( this.authors[i].id === id) { 
-        this.authors[i].update(firstname, lastname, birthdate, isAlive);
-      }
-    }
-    return this.authors;
-  }
-
-  getAuthorsName() {
-    return this.authors.map(author => author.firstname+' '+author.lastname);
+      return this.http.put<any>(this.apiURL+'/authors/'+id, {
+        'firstname': firstname,
+        'lastname': lastname, 
+        'isAlive': isAlive
+      });
   }
 
   getAuthors() {
-    return this.authors;
+    return this.http.get<any>(this.apiURL+'/authors/');
   }
 
   deleteAuthor(id:string) {
-    for( var i = 0; i < this.authors.length; i++){                  
-      if ( this.authors[i].id === id) { 
-        this.authors.splice(i, 1); 
-        i--; 
-      }
-    }
-    return this.authors;
+    return this.http.delete<any>(this.apiURL+'/authors/'+id);
   }
 }
