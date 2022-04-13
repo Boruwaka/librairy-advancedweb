@@ -3,21 +3,61 @@ package com.example.library;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @Component
 public class AuthorController {
 
+    private final AuthorRepository repository;
+
+    AuthorController(AuthorRepository repository) {
+        this.repository = repository;
+    }
+
     @Autowired
     AuthorService authorService;
 
-    @GetMapping("/test")
-    public String test() {
-        Author author = new Author();
-        author.setLastname("Bite");
-        authorService.save(author);
-        return authorService.findById(author.getId()).toString();
+
+    @GetMapping("/authors")
+    public List<Author> authorList() {
+        return repository.findAll();
     }
+
+    @PostMapping("/authors")
+    Author newAuthor(@RequestBody Author newAuthor) {
+        return repository.save(newAuthor);
+    }
+
+    @GetMapping("/authors/{id}")
+    Optional<Author> one(@PathVariable Long id) {
+
+        return repository.findById(id);
+    }
+
+    @PutMapping("/authors/{id}")
+    Author replaceAuthor(@RequestBody Author newAuthor, @PathVariable Long id) {
+
+        return repository.findById(id)
+                .map(author -> {
+                    author.setFirstname(newAuthor.getFirstname());
+                    author.setLastname(newAuthor.getLastname());
+                    author.setIsAlive(newAuthor.getIsAlive());
+                    return repository.save(author);
+                })
+                .orElseGet(() -> {
+                    newAuthor.setId(id);
+                    return repository.save(newAuthor);
+                });
+    }
+
+    @DeleteMapping("/authors/{id}")
+    void deleteAuthor(@PathVariable Long id) {
+        repository.deleteById(id);
+    }
+
+
 }
